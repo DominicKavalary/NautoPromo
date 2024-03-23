@@ -1,0 +1,10 @@
+[Unit]
+Description=Script that queries nautobot for Prometheus file_sd targets
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/NautoPromo/NautoPromo.py
+
+[Install]
+WantedBy=multi-user.target
