@@ -19,8 +19,8 @@ query {
 """
 print("Started, making API call")
 nb = pynautobot.api(
-    url="https://10.128.0.8",
-    token="41ddbd050e13bd939fb266adcc5ecf20a24034fd",
+    url="https://IP-ADDRESS-OF-NAUTOBOT-SERVER",
+    token="API-TOKEN-STRING",
     verify=False
 )
 gql = nb.graphql.query(query=query)
