@@ -1,0 +1,9 @@
+[Unit]
+Description=Run NautoPromo every 5 minutes
+
+[Timer]
+OnUnitActiveSec=5m
+Unit=NautoPromo.service
+
+[Install]
+WantedBy=timers.target
