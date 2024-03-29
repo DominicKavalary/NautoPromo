@@ -19,38 +19,29 @@ query {
 
 #### Nautobot API Connection stuff. verify=False for self signed certs ###
 nb = pynautobot.api(
-    url = "https://IPADDRESS",
-    token = "NAUTOBOT_API_TOKEN",
+    url = "https://IP_ADDRESS",
+    token = "API_NAUTOBOT_TOKEN",
     verify = False
 )
 print("Querying")
 #### GraphQL Query to Nautobot, turn to json ####
 gql = nb.graphql.query(query=query)
 gqljson = (json.dumps(gql.json, indent=2))
-
+data = json.loads(gqljson)
 #### Parsing through each line in json for management0 address ####
-## Seperate by line ##
-gqljsonlines = gqljson.split('\n')
 
-## Create empty array to be filled with target addresses, and set flags for if the management0 interface and address had been found ##
+## Create empty array to be filled with target addresses ##
 arrayOfTargets = []
-managementFound = False
-addressFound = False
-address = ""
 
-## Go through lines, when the management0 flag is set to true, the next address it finds will be considered Management0's. when it finds both, append a target to the list with ocprometheus default exposed port of 8080. ##
-for line in gqljsonlines:
-#   print(line) uncomment to see every line returned in query. Another idea would be to export it as a document to read later
-   if '"name": "Management0"' in line and managementFound == False:
-       managementFound = True
-   elif '"address"' in line and addressFound == False:
-       address = line[line.find(":")+3:line.find("/")]
-       addressFound = True
-   if managementFound and addressFound:
-       arrayOfTargets.append(address+":8080")
-       managementFound = False
-       addressFound = False
-       address = ""
+## iterate through the json data with the keys and values to obtain ip addresses
+for device in data['data']['devices']:
+  for interface in device['interfaces']:
+    if interface['name'] == 'Management0':
+      for ip_address in interface['ip_addresses']:
+         address = ip_address['address']
+         address = address[:address.find("/")]
+         arrayOfTargets.append(address+":8080")
+
 # an idea could be to also have it run through a blacklist file and remove any non wanted devices. could be useful if you need to take a device down for a while #
 
 #### Create a string that has the one line of yaml that the file_sd_config target file needs. basically, "- targets:" and then a string array of the targets+port ####
