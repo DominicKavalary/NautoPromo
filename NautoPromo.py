@@ -19,8 +19,8 @@ query {
 
 #### Nautobot API Connection stuff. verify=False for self signed certs ###
 nb = pynautobot.api(
-    url = "https://34.28.153.201",
-    token = "41ddbd050e13bd939fb266adcc5ecf20a24034fd",
+    url = "https://IPADDRESS",
+    token = "NAUTOBOT_API_TOKEN",
     verify = False
 )
 print("Querying")
